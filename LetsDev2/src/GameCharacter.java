@@ -7,17 +7,17 @@ public class GameCharacter extends GameObject {
     
     public GameCharacter() {
         super();
-        tile = new GameTile(0,128,"Characters.png",32,32,30);
+        tile = new GameTile(0,128,"Characters.png",32,32,0,-16);
         rotation = 0;
-        walkingSpeed = 10.0f;
+        walkingSpeed = 0.1f;
         currentMove = new Vec3();
     }
     public GameCharacter(float tx, float ty, float tz){
         super(tx,  ty,  tz);
-        tile = new GameTile(0,128,"Characters.png",32,32,30);
+        tile = new GameTile(0,128,"Characters.png",32,32,0,-16);
         rotation = 0;
         currentMove = new Vec3();
-        walkingSpeed = 10.0f;        
+        walkingSpeed = 0.1f;        
     }
     public void rotate(float val){
         rotation += val;
@@ -28,6 +28,9 @@ public class GameCharacter extends GameObject {
             rotation += PI2;
         }
     }
+    public void rotateTo(float val){
+    	rotation = val;
+    }
     public void move(Vec3 moveDir){
         moveDir.norm();
         fx += Math.sin(rotation)*moveDir.x*walkingSpeed;
@@ -36,14 +39,19 @@ public class GameCharacter extends GameObject {
         y = (int)fy;
     }
     public void moveAbs(Vec3 moveDir){
-        currentMove.add(moveDir);
+  		currentMove.add(moveDir);
     }
     
     public void tick(){
+    	tile.tileX = 2;
+    	tile.tileY = -14;
         currentMove.norm();
         currentMove.mult(walkingSpeed);
-        x += currentMove.x;
-        y += currentMove.y;
+    	if(GameApplet.controller.checkValidMove(GameController.MovementType.WALKING, this, currentMove)){
+	        x += currentMove.x;
+	        y += currentMove.y;
+	        hasMoved();
+    	}
         currentMove.setZero();
     }
 }

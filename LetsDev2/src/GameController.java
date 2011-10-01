@@ -2,6 +2,7 @@
 import java.awt.Graphics2D;
 
 
+
 // Handles actions from input/network
 public class GameController {
     private GameWorld world;
@@ -9,6 +10,8 @@ public class GameController {
     private GameCharacter currentChar;
     private GameApplet app;
     public UserSettings settings;
+    
+    public static enum MovementType { WALKING, FLYING } 
     
     public static final int GRIDSIZE = 32;    
     public GameController(GameApplet a) {
@@ -69,4 +72,18 @@ public class GameController {
     public void rotateCurrentChar(float r){
         currentChar.rotate(r);
     }
+    public Vec3 getCurrentCharacterScreenLoc(){
+    	return (renderer.getScreenLoc(currentChar));
+    }
+
+	public boolean checkValidMove(MovementType mt, GameObject ob, Vec3 moveDir) {
+		// TODO Auto-generated method stub
+		Vec3 newPos = new Vec3(ob.x, ob.y, ob.z);
+		newPos.add(moveDir);
+		Terrain t = world.getTerrain((int)newPos.x,(int)newPos.y,(int)newPos.z);
+		if(mt == MovementType.WALKING){ return t.terType.walkable; }
+		if(mt == MovementType.FLYING){ return t.terType.passable; }
+		
+		return false;
+	}
 }

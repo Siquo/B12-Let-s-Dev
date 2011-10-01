@@ -90,6 +90,7 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 
     @Override
     public void mouseMoved(MouseEvent e) {
+    	rotateCharacter(e);
     }
     
     private void doWASD(){
@@ -119,5 +120,11 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
         if(keysDown.get(KeyEvent.VK_S)!=null && keysDown.get(KeyEvent.VK_S)){
             controller.moveCurrentCharAbs(new Vec3(0,1,0));
         }
+    }
+    private void rotateCharacter(MouseEvent e){
+    	Vec3 dv = controller.getCurrentCharacterScreenLoc();
+    	int dx = e.getX();
+    	int dy = e.getY();
+    	
     }
 }

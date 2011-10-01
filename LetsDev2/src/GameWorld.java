@@ -18,12 +18,13 @@ public class GameWorld {
     
     public GameWorld(int sd) {
         super();
+        GamePhysical.setWorld(this);
         seed = sd;
         rnd = new Random(seed);
         terrain = new HashMap<Integer,TreeMap<Integer,Terrain> >();
         terTypes = new HashMap<String,TerrainType>(100);
-        terTypes.put("Rock Floor", new TerrainType("Rock Floor",64,0, 32, 20));
-        terTypes.put("Rock Wall", new TerrainType("Rock Wall", new GameTile(64,60,"Terrain.png",32,30,-21)));
+        terTypes.put("Rock Floor", new TerrainType("Rock Floor", new GameTile(32,0,"Terrain.png",32,15,0,12), true, true));
+        terTypes.put("Rock Wall", new TerrainType("Rock Wall", new GameTile(64,60,"Terrain.png",32,30,0,0),false,false));
         objects = new LinkedList<GameObject>();
     }
     
@@ -61,10 +62,14 @@ public class GameWorld {
     }
     
     private Terrain generateTerrain(int i, int j, int k){
-        if(rnd.nextBoolean()){
-            return new Terrain(i*GameController.GRIDSIZE,j*GameController.GRIDSIZE,k*GameController.GRIDSIZE, terTypes.get("Rock Wall"));
+        if(i==10 && j == 10){
+        	return new Terrain(i,j,k, terTypes.get("Rock Floor"));
         }
-        return new Terrain(i*GameController.GRIDSIZE,j*GameController.GRIDSIZE,k*GameController.GRIDSIZE, terTypes.get("Rock Floor"));
+        if(rnd.nextInt(10)<2){
+        //if(j> 30 || i > 20 ){ //|| rnd.nextInt(10)<2){
+            return new Terrain(i,j,k, terTypes.get("Rock Wall"));
+        }
+      	return new Terrain(i,j,k, terTypes.get("Rock Floor"));
     }
     
     public LinkedList<GamePhysical> getDrawable(int i, int j, int k){

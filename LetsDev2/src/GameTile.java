@@ -1,7 +1,7 @@
 
 public class GameTile implements DrawableTile{
     public int tileLocX, tileLocY, rnd;
-    public int tileWidth, tileHeight, tileZ;
+    public int tileWidth, tileHeight, tileY, tileX;
     
     public String imageFileName;
     
@@ -11,15 +11,17 @@ public class GameTile implements DrawableTile{
         tileLocY = 0;
         tileWidth = 32;
         tileHeight = 20;
-        tileZ = 0;
+        tileX = 0;
+        tileY = 0;
     }
-    public GameTile(int x, int y, String fName, int w, int h, int z) {
-        imageFileName = fName;
-        tileLocX = x;
+    public GameTile(int x, int y, String fName, int w, int h, int z, int z2) {
+        imageFileName = fName;  // file
+        tileLocX = x; // location in the file
         tileLocY = y;
-        tileWidth = w;
+        tileWidth = w;  // width/height
         tileHeight = h;
-        tileZ = z;
+        tileX = z; // These two are graphical offset on screen: draw tileX to the left and tileY to the right
+        tileY = z2;// of the actual location
     }
 
     public int getTileX(){

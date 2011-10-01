@@ -26,7 +26,7 @@ public class GameApplet extends Applet {
     static State state;   // current state of the game
          
 
-    private GameController controller;
+    static public GameController controller;
     public InputHandler listener;
     private Image dbImage;
     private Graphics dbg; 

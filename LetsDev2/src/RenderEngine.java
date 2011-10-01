@@ -48,18 +48,24 @@ public class RenderEngine {
     }
     
     public void centerViewPort(GamePhysical p){
-        int x, y, tx, ty;
-        x = (int)(p.x-p.y)/2;
-        y = (int)(p.tile.tileZ +((p.x+p.y)/2))/2;
-        tx = p.tile.getTileX();
-        ty = p.tile.getTileY();    	
-        viewPortX = viewWidth + tx;
-        viewPortY = viewHeight + ty;
+        int x, y;
+        float fx = p.x;
+        float fy = p.y;
+        x = (int)(GameController.GRIDSIZE*(fx-fy)/2);
+        y = (int)(GameController.GRIDSIZE*(((fx+fy)/2))/2);
+        if(Math.abs(viewPortX - x) > viewWidth /4){
+        	//viewPortX = viewWidth/2 - x;
+        }
+        if(Math.abs(viewPortY - y) > viewHeight /4){
+        	//viewPortY = viewHeight/2 - y;
+        }
         
     }
     
     public void drawWorld(Graphics2D g, GameWorld w){
         LinkedList<GamePhysical> d;
+        Iterator iter = w.objects.iterator();
+        GameObject o;
         for(int i=viewTileMinX;i<viewTileMaxX;i++){
             for(int j=viewTileMinY;j<viewTileMaxY;j++){
                 d = w.getDrawable(i,j,z);
@@ -68,17 +74,21 @@ public class RenderEngine {
                     GamePhysical t = iterator.next();
                     if(t != null){
                         drawTile(g, t);
+                        iter =  ((Terrain)t).objects.iterator();
+                        while(iter.hasNext()){
+                            o = (GameObject) iter.next();
+                            drawTile(g, o);
+                            g.drawString("Object:"+o.x+ " "+o.y, 300, 200);
+                        }
                     }
                 }
             }
         }
-        Iterator i = w.objects.iterator();
-        GameObject o;
-        while(i.hasNext()){
-            o = (GameObject) i.next();
+      /*  while(iter.hasNext()){
+            o = (GameObject) iter.next();
             drawTile(g, o);
             g.drawString("Object:"+o.x+ " "+o.y, 300, 200);
-        }
+        }*/
     }
     private Image getImage(String s){
         if(images.get(s) != null){
@@ -100,23 +110,40 @@ public class RenderEngine {
         return img;
     }
     private void drawTile(Graphics2D g, GamePhysical d){
-    //draw this objec ton the screen
-        //g.setColor(c);
-        //g.drawRect(x, y, tileSizeX, tileSizeY);
-        //g.drawString("TRY:"+d.tile.imageFileName, 300, 400);
+    //draw this object on the screen
         Image img = getImage(d.tile.imageFileName);
         if(img == null){ return; } // should I throw something here? probably
         //g.drawString("Succeeded", 300, 420);
-        int x, y, tx, ty;
-        x = (int)(d.x-d.y)/2;
-        y = (int)(d.tile.tileZ +((d.x+d.y)/2))/2;
+        Vec3 loc = getScreenLoc(d);
+        int tx = d.tile.getTileX();
+        int ty = d.tile.getTileY();
+        g.drawImage(img,(int)loc.x,(int)loc.y,(int)loc.x+d.tile.tileWidth, (int)loc.y+d.tile.tileHeight, tx, ty, tx+d.tile.tileWidth, ty+d.tile.tileHeight, null);
+        
+
+        /*int x, y, tx, ty;
+        float fx = d.x;
+        float fy = d.y;        
+        x = (int)(d.tile.tileX +(32*(fx-fy)/2));
+        y = (int)(d.tile.tileY +(32*((fx+fy)/2))/2);
         tx = d.tile.getTileX();
         ty = d.tile.getTileY();
-        //x*=16;
-        //y*=10;
+        //x*=30;
+        //y*=20;
         x+= viewPortX;
         y+= viewPortY;
-        //g.drawString("tile "+viewPortX+" "+viewPortY+" "+tx+" "+ty, 100, y);
-        g.drawImage(img,x,y,x+d.tile.tileWidth, y+d.tile.tileHeight, tx, ty, tx+d.tile.tileWidth, ty+d.tile.tileHeight, null);    
+        g.drawImage(img,x,y,x+d.tile.tileWidth, y+d.tile.tileHeight, tx, ty, tx+d.tile.tileWidth, ty+d.tile.tileHeight, null);*/
+        
+       
     }
+    
+    public Vec3 getScreenLoc(Vec3 f){
+    	return getScreenLoc(f.x, f.y, f.z, 0, 0);
+    }
+    public Vec3 getScreenLoc(GamePhysical d){
+    	return getScreenLoc(d.x, d.y, 0, d.tile.tileX, d.tile.tileY);
+    }
+    public Vec3 getScreenLoc(float x, float y, float z, float tx, float ty){
+    	return (new Vec3((int)(tx+viewPortX +(32*(x-y)/2)), (int)(ty+viewPortY +(32*((x+y)/2))/2), 0));
+    }
+
 }

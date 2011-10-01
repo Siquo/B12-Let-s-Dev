@@ -4,6 +4,8 @@ import java.awt.Graphics;
 
 
 public class GamePhysical {
+	static private GameWorld world;
+	
     static enum Direction {
         NORTH, EAST, SOUTH, WEST, UP, DOWN
     }
@@ -26,5 +28,10 @@ public class GamePhysical {
 
         
     }
-    
+    static public GameWorld getWorld(){
+    	return world;
+    }
+    static public void setWorld(GameWorld w){
+    	world = w;
+    }    
 }
