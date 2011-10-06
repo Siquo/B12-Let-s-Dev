@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
+import sound.AudioPlayer;
+
 
 public class GameApplet extends Applet {
     // Define constants for the game
@@ -14,6 +16,7 @@ public class GameApplet extends Applet {
     static final int CANVAS_HEIGHT = 600;
     static final int UPDATE_RATE = 4;    // number of game update per second
     static final long UPDATE_PERIOD = 1000000000L / UPDATE_RATE;
+
 
    // @SuppressWarnings("compatibility:4806502096835282862")
     private static final long serialVersionUID = 1L; // nanoseconds
@@ -85,6 +88,8 @@ public class GameApplet extends Applet {
         controller.setGameWorld(new GameWorld((int)(System.nanoTime()/ 1000000L))); // random seed
         controller.setRenderEngine(new RenderEngine(getCodeBase(), this));
         controller.setSettings(new UserSettings());
+        controller.setSoundManager(new AudioPlayer(this.getCodeBase()));
+        
         
         listener.setGameController(controller);
         controller.startGame();

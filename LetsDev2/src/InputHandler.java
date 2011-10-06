@@ -85,7 +85,7 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        controller.moveViewRelative(e.getX(), e.getY());
+        //controller.moveViewRelative(e.getX(), e.getY());
     }
 
     @Override
@@ -123,8 +123,10 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
     }
     private void rotateCharacter(MouseEvent e){
     	Vec3 dv = controller.getCurrentCharacterScreenLoc();
-    	int dx = e.getX();
-    	int dy = e.getY();
+    	int dx = e.getX()-(int)dv.x;
+    	int dy = e.getY()-(int)dv.y;
+    	
+    	controller.rotateCurrentChar((float)Math.atan(dy/dx));
     	
     }
 }

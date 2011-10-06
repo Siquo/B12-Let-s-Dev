@@ -1,6 +1,9 @@
 
 import java.awt.Graphics2D;
 
+import sound.AudioPlayer;
+import sound.AudioPlayer.MusicType;
+
 
 
 // Handles actions from input/network
@@ -9,6 +12,7 @@ public class GameController {
     private RenderEngine renderer;
     private GameCharacter currentChar;
     private GameApplet app;
+    private AudioPlayer soundManager;
     public UserSettings settings;
     
     public static enum MovementType { WALKING, FLYING } 
@@ -43,6 +47,7 @@ public class GameController {
     
     public void startGame(){
     	currentChar = new GameCharacter(10,10,0);
+    	soundManager.playMusic(MusicType.MS_NORMAL);
         addObject (currentChar);
     }
     
@@ -85,5 +90,13 @@ public class GameController {
 		if(mt == MovementType.FLYING){ return t.terType.passable; }
 		
 		return false;
+	}
+
+	public AudioPlayer getSoundManager() {
+		return soundManager;
+	}
+
+	public void setSoundManager(AudioPlayer soundManager) {
+		this.soundManager = soundManager;
 	}
 }
