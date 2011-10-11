@@ -89,6 +89,12 @@ public class RenderEngine {
             drawTile(g, o);
             g.drawString("Object:"+o.x+ " "+o.y, 300, 200);
         }*/
+        Vec3 f = getRealLoc(200,100);
+        Vec3 t = getScreenLoc(f);
+        g.setColor(Color.CYAN);
+        g.drawString(" test x"+f.x+" y"+f.y, 20, 230);
+        g.drawString(" test x"+t.x+" y"+t.y, 20, 250);
+        g.drawRect((int)t.x, (int)t.y, 4, 4);
     }
     private Image getImage(String s){
         if(images.get(s) != null){
@@ -144,6 +150,12 @@ public class RenderEngine {
     }
     public Vec3 getScreenLoc(float x, float y, float z, float tx, float ty){
     	return (new Vec3((int)(tx+viewPortX +(32*(x-y)/2)), (int)(ty+viewPortY +(32*((x+y)/2))/2), 0));
+    }
+    public Vec3 getRealLoc(float u, float v) {
+    	
+    	float x = -(2*viewPortY+viewPortX-2*v-u)/32;
+    	float y = -(2*viewPortY-viewPortX-2*v+u)/32;
+    	return (new Vec3(x,y,0));
     }
 
 }

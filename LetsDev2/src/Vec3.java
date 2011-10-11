@@ -17,11 +17,12 @@ public class Vec3 {
     public float size(){
         return (float)Math.sqrt(x*x+y*y+z*z);
     }
-    public void norm(){
+    public Vec3 norm(){
     	float s = size();
     	if(s!=0){
           mult(1/s);
     	}
+    	return this;
     }
     public void add(Vec3 f){
         x += f.x;

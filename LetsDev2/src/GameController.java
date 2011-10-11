@@ -80,9 +80,11 @@ public class GameController {
     public Vec3 getCurrentCharacterScreenLoc(){
     	return (renderer.getScreenLoc(currentChar));
     }
+    public void characterFire() {
+    	currentChar.fire();
+    }
 
 	public boolean checkValidMove(MovementType mt, GameObject ob, Vec3 moveDir) {
-		// TODO Auto-generated method stub
 		Vec3 newPos = new Vec3(ob.x, ob.y, ob.z);
 		newPos.add(moveDir);
 		Terrain t = world.getTerrain((int)newPos.x,(int)newPos.y,(int)newPos.z);

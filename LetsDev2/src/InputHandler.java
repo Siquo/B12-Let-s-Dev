@@ -29,6 +29,9 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
         }else{
             doWESD();
         }
+        if(mouseLeftIsDown) {
+        	controller.characterFire();
+        }
     }
 
 

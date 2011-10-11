@@ -2,6 +2,7 @@ package sound;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javazoom.spi.mpeg.sampled.file.IcyListener;
@@ -25,17 +26,17 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 
 public class AudioPlayer {
-	MpegAudioFileReaderWorkaround aReader;
-	Clip currentClip;
-	AudioInputStream currentSong;
-	URL url;
+//	private MpegAudioFileReaderWorkaround aReader;
+	private Clip currentClip;
+	private AudioInputStream currentSong;
+	private URL url;
     private Player player; 
     
     
 	public AudioPlayer(URL u){
 		super();
 		url = u;
-		aReader = new MpegAudioFileReaderWorkaround();
+		//aReader = new MpegAudioFileReaderWorkaround();
 		
 	}
 	
@@ -70,7 +71,8 @@ public class AudioPlayer {
 	
 	private void loadSong(String songName){
 	    try {
-	        FileInputStream fis     = new FileInputStream(songName);
+	    	URL nurl = new URL(url, songName);
+	        InputStream fis     = nurl.openStream();
 	        BufferedInputStream bis = new BufferedInputStream(fis);
 	        player = new Player(bis);
 	    }
@@ -82,15 +84,12 @@ public class AudioPlayer {
 
 
 	// run in new thread to play in background
-	new Thread() {
-	    public void run() {
-	        try { player.play(); }
-	        catch (Exception e) { System.out.println(e); }
-	    }
-	}.start();
-
-		
-		
+	    new Thread() {
+		    public void run() {
+		        try { player.play(); }
+		        catch (Exception e) { System.out.println(e); }
+		    }
+		}.start();
 	}
 /*	
 	private void loadSong(String songName){

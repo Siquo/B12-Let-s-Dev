@@ -34,6 +34,10 @@ public class MpegAudioFileReaderWorkaround extends MpegAudioFileReader
 	/**
 	 * Returns AudioInputStream from url and userAgent
 	 */
+	public MpegAudioFileReaderWorkaround() {
+		super();
+	}
+	
 	public AudioInputStream getAudioInputStream(URL url, String userAgent) throws UnsupportedAudioFileException, IOException
 	{
 

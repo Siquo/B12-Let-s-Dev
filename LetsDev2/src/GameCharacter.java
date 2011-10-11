@@ -1,7 +1,8 @@
 
 public class GameCharacter extends GameObject {
     private float rotation, fx, fy;
-    public float walkingSpeed;
+    public float walkingSpeed, bulletSpeed;
+    
     private Vec3 currentMove;
     private static final float PI2 = (float)Math.PI*2 ;
     
@@ -10,6 +11,7 @@ public class GameCharacter extends GameObject {
         tile = new GameTile(0,128,"Characters.png",32,32,0,-16);
         rotation = 0;
         walkingSpeed = 0.1f;
+        bulletSpeed = 0.3f;
         currentMove = new Vec3();
     }
     public GameCharacter(float tx, float ty, float tz){
@@ -53,5 +55,10 @@ public class GameCharacter extends GameObject {
 	        hasMoved();
     	}
         currentMove.setZero();
+    }
+    
+    public void fire() {
+    	GameProjectile bullet = new GameProjectile(x, y, z);
+    	bullet.speed = new Vec3((float)Math.sin(rotation)*bulletSpeed, (float)Math.cos(rotation)*bulletSpeed,0).norm();
     }
 }
