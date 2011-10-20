@@ -6,7 +6,7 @@ public class UserSettings {
     
     public UserSettings() {
         super();
-        keyBoardSettings = "WESD";
+        keyBoardSettings = "WASD";
         spriteBase = "Images/Default";
         
     }

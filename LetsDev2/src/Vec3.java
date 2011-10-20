@@ -29,10 +29,11 @@ public class Vec3 {
         y += f.y;
         z += f.z;
     }
-    public void mult(float a){
+    public Vec3 mult(float a){
         x *= a;
         y *= a;
         z *= a;
+        return this;
     }
     public void setZero(){
         x = 0;

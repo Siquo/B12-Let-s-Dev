@@ -66,14 +66,14 @@ public class RenderEngine {
     }
     
     public void drawWorld(Graphics2D g, GameWorld w){
-    	Vec3 topLeft = getRealLoc(viewPortX, viewPortY);
-    	Vec3 topRight = getRealLoc(viewPortX+viewWidth, viewPortY);
-    	Vec3 bottomLeft = getRealLoc(viewPortX, viewPortY+viewHeight);
-    	Vec3 bottomRight = getRealLoc(viewPortX+viewWidth, viewPortY+viewHeight);
-    	int minX = (int)topLeft.x;//topLeft.x;
-    	int minY = (int)topRight.y;
-    	int maxX = (int)bottomRight.x;
+    	Vec3 topLeft = getRealLoc(0, 0);
+    	Vec3 topRight = getRealLoc(viewWidth, 0);
+    	Vec3 bottomLeft = getRealLoc(0, viewHeight);
+    	Vec3 bottomRight = getRealLoc(viewWidth, viewHeight);
+    	int minY = (int)topRight.y;//topLeft.x;
+    	int minX = (int)topLeft.x;
     	int maxY = (int)bottomLeft.y;
+    	int maxX = (int)bottomRight.x;
     	
         // reserve memory
     	LinkedList<GamePhysical> d;
@@ -96,7 +96,7 @@ public class RenderEngine {
                             drawTile(g, o);
                             g.drawString("Object:"+controller.getCurrentCharacter().getRotation() + " "+controller.getCurrentCharacterScreenLoc().y, 300, 200);
                             Vec3 p = getScreenLoc(o);
-                            g.drawString("Object:"+p.x+ " "+p.y, 300, 230);
+                            g.drawString("Object:"+minX+ " "+maxX, 300, 230);
                         }
                     }
                 }

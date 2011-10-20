@@ -88,6 +88,7 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 
     @Override
     public void mouseDragged(MouseEvent e) {
+    	rotateCharacter(e);
         //controller.moveViewRelative(e.getX(), e.getY());
     }
 
@@ -97,17 +98,17 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
     }
     
     private void doWASD(){
-        if(keysDown.get(KeyEvent.VK_W)){
-            controller.rotateCurrentChar(-0.5f);
+        if(keysDown.get(KeyEvent.VK_W)!=null && keysDown.get(KeyEvent.VK_W)){
+            controller.moveCurrentChar(new Vec3(0,1,0));
         }
-        if(keysDown.get(KeyEvent.VK_A)){
+        if(keysDown.get(KeyEvent.VK_A)!=null && keysDown.get(KeyEvent.VK_A)){
             controller.moveCurrentChar(new Vec3(1,0,0));
         }
-        if(keysDown.get(KeyEvent.VK_S)){
+        if(keysDown.get(KeyEvent.VK_S)!=null && keysDown.get(KeyEvent.VK_S)){
             controller.moveCurrentChar(new Vec3(-1,0,0));
         }
-        if(keysDown.get(KeyEvent.VK_D)){
-            controller.rotateCurrentChar(0.5f);
+        if(keysDown.get(KeyEvent.VK_D)!=null && keysDown.get(KeyEvent.VK_D)){
+            controller.moveCurrentChar(new Vec3(0,1,0));
         }
     }
     private void doWESD(){
