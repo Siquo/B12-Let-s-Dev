@@ -129,7 +129,7 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
     	int dx = e.getX()-(int)dv.x;
     	int dy = e.getY()-(int)dv.y;
     	
-    	controller.rotateCurrentChar((float)Math.atan(dy/dx));
+    	controller.rotateCurrentChar((float)Math.atan2(dy,dx));
     	
     }
 }

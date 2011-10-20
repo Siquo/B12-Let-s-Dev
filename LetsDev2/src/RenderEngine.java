@@ -17,6 +17,7 @@ public class RenderEngine {
     int tileSizeX, tileSizeY;
     
     GameApplet app;
+    GameController controller;
     HashMap<String, Image> images;
     URL url;
     int viewTileMinX, viewTileMinY, viewTileMaxX, viewTileMaxY;
@@ -24,15 +25,16 @@ public class RenderEngine {
     
     MediaTracker mt;
     
-    public RenderEngine(URL u, GameApplet a) {
+    public RenderEngine(URL u, GameApplet a, GameController c) {
         super();
         url = u;
         app = a;
+        controller = c;
         mt = new MediaTracker(app);
 
         // This is in pixels
-        viewPortX = 300;
-        viewPortY = 100;
+        viewPortX = 0;
+        viewPortY = 0;
         tileSizeX = 32;
         tileSizeY = 20;
         viewWidth = GameApplet.CANVAS_WIDTH ;/// tileSizeX;
@@ -47,29 +49,43 @@ public class RenderEngine {
         images = new HashMap<String, Image>();
     }
     
-    public void centerViewPort(GamePhysical p){
-        int x, y;
-        float fx = p.x;
-        float fy = p.y;
-        x = (int)(GameController.GRIDSIZE*(fx-fy)/2);
-        y = (int)(GameController.GRIDSIZE*(((fx+fy)/2))/2);
-        if(Math.abs(viewPortX - x) > viewWidth /4){
-        	//viewPortX = viewWidth/2 - x;
+    public void centerViewPort(GamePhysical gp){
+        Vec3 p = getScreenLoc(gp);
+        if(p.x < viewWidth /3){
+        	viewPortX += ((int)p.x - viewWidth/3);
         }
-        if(Math.abs(viewPortY - y) > viewHeight /4){
-        	//viewPortY = viewHeight/2 - y;
+        if(p.x > viewWidth * 2/3){
+        	viewPortX += ((int)p.x - viewWidth*2/3);
         }
-        
+        if(p.y < viewHeight /3){
+        	viewPortY += ((int)p.y -viewHeight/3);
+        }
+        if(p.y > viewHeight * 2/3){
+        	viewPortY += ((int)p.y - viewHeight*2/3);
+        }
     }
     
     public void drawWorld(Graphics2D g, GameWorld w){
-        LinkedList<GamePhysical> d;
+    	Vec3 topLeft = getRealLoc(viewPortX, viewPortY);
+    	Vec3 topRight = getRealLoc(viewPortX+viewWidth, viewPortY);
+    	Vec3 bottomLeft = getRealLoc(viewPortX, viewPortY+viewHeight);
+    	Vec3 bottomRight = getRealLoc(viewPortX+viewWidth, viewPortY+viewHeight);
+    	int minX = (int)topLeft.x;//topLeft.x;
+    	int minY = (int)topRight.y;
+    	int maxX = (int)bottomRight.x;
+    	int maxY = (int)bottomLeft.y;
+    	
+        // reserve memory
+    	LinkedList<GamePhysical> d;
         Iterator iter = w.objects.iterator();
+        Iterator<GamePhysical> iterator;
         GameObject o;
-        for(int i=viewTileMinX;i<viewTileMaxX;i++){
-            for(int j=viewTileMinY;j<viewTileMaxY;j++){
+        
+        // loop all visible tiles.
+        for(int i=minX;i<maxX;i++){
+            for(int j=minY;j<maxY;j++){
                 d = w.getDrawable(i,j,z);
-                Iterator<GamePhysical> iterator = d.iterator();
+                iterator = d.iterator();
                 while(iterator.hasNext()){
                     GamePhysical t = iterator.next();
                     if(t != null){
@@ -78,7 +94,9 @@ public class RenderEngine {
                         while(iter.hasNext()){
                             o = (GameObject) iter.next();
                             drawTile(g, o);
-                            g.drawString("Object:"+o.x+ " "+o.y, 300, 200);
+                            g.drawString("Object:"+controller.getCurrentCharacter().getRotation() + " "+controller.getCurrentCharacterScreenLoc().y, 300, 200);
+                            Vec3 p = getScreenLoc(o);
+                            g.drawString("Object:"+p.x+ " "+p.y, 300, 230);
                         }
                     }
                 }
@@ -149,7 +167,7 @@ public class RenderEngine {
     	return getScreenLoc(d.x, d.y, 0, d.tile.tileX, d.tile.tileY);
     }
     public Vec3 getScreenLoc(float x, float y, float z, float tx, float ty){
-    	return (new Vec3((int)(tx+viewPortX +(32*(x-y)/2)), (int)(ty+viewPortY +(32*((x+y)/2))/2), 0));
+    	return (new Vec3((int)(tx-viewPortX +(32*(x-y)/2)), (int)(ty-viewPortY +(32*((x+y)/2))/2), 0));
     }
     public Vec3 getRealLoc(float u, float v) {
     	

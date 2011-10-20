@@ -75,10 +75,13 @@ public class GameController {
         currentChar.moveAbs(dir);
     }
     public void rotateCurrentChar(float r){
-        currentChar.rotate(r);
+        currentChar.rotateTo(r-((float)Math.PI/4));
     }
     public Vec3 getCurrentCharacterScreenLoc(){
     	return (renderer.getScreenLoc(currentChar));
+    }    
+    public GameCharacter getCurrentCharacter(){
+    	return (currentChar);
     }
     public void characterFire() {
     	currentChar.fire();

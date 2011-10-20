@@ -8,17 +8,18 @@ public class GameCharacter extends GameObject {
     
     public GameCharacter() {
         super();
-        tile = new GameTile(0,128,"Characters.png",32,32,0,-16);
+        tile = new GameTile(0,128,"Graphics.png",32,32,0,-16);
         rotation = 0;
         walkingSpeed = 0.1f;
-        bulletSpeed = 0.3f;
+        bulletSpeed = 0.12f;
         currentMove = new Vec3();
     }
     public GameCharacter(float tx, float ty, float tz){
         super(tx,  ty,  tz);
-        tile = new GameTile(0,128,"Characters.png",32,32,0,-16);
+        tile = new GameTile(0,128,"Graphics.png",32,32,0,-16);
         rotation = 0;
         currentMove = new Vec3();
+        bulletSpeed = 0.12f;
         walkingSpeed = 0.1f;        
     }
     public void rotate(float val){
@@ -32,6 +33,9 @@ public class GameCharacter extends GameObject {
     }
     public void rotateTo(float val){
     	rotation = val;
+    }
+    public float getRotation() {
+    	return rotation;
     }
     public void move(Vec3 moveDir){
         moveDir.norm();
@@ -59,6 +63,7 @@ public class GameCharacter extends GameObject {
     
     public void fire() {
     	GameProjectile bullet = new GameProjectile(x, y, z);
-    	bullet.speed = new Vec3((float)Math.sin(rotation)*bulletSpeed, (float)Math.cos(rotation)*bulletSpeed,0).norm();
+    	bullet.speed = new Vec3((float)Math.cos(rotation)*bulletSpeed, (float)Math.sin(rotation)*bulletSpeed,0).norm();
+    	getWorld().addObject(bullet);
     }
 }

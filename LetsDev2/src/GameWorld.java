@@ -15,6 +15,7 @@ public class GameWorld {
     public HashMap<String, TerrainType> terTypes;
     
     public LinkedList<GameObject> objects;
+    public LinkedList<GameObject> toBeDeleted;
     
     public GameWorld(int sd) {
         super();
@@ -23,9 +24,16 @@ public class GameWorld {
         rnd = new Random(seed);
         terrain = new HashMap<Integer,TreeMap<Integer,Terrain> >();
         terTypes = new HashMap<String,TerrainType>(100);
-        terTypes.put("Rock Floor", new TerrainType("Rock Floor", new GameTile(32,0,"Terrain.png",32,15,0,12), true, true));
-        terTypes.put("Rock Wall", new TerrainType("Rock Wall", new GameTile(64,60,"Terrain.png",32,30,0,0),false,false));
+        terTypes.put("Rock Floor1", new TerrainType("Rock Floor1", new GameTile(64,32,"Graphics.png",32,30,0,0), true, true));
+        terTypes.put("Rock Floor0", new TerrainType("Rock Floor0", new GameTile(96,32,"Graphics.png",32,30,0,0), true, true));
+        terTypes.put("Rock Wall1", new TerrainType("Rock Wall1", new GameTile(0,64,"Graphics.png",32,30,0,0),false,false));
+        terTypes.put("Rock Wall0", new TerrainType("Rock Wall0", new GameTile(32,64,"Graphics.png",32,30,0,0),false,false));
+        terTypes.put("Ore Wall1", new TerrainType("Ore Wall1", new GameTile(0,32,"Graphics.png",32,30,0,0),false,false));
+        terTypes.put("Ore Wall0", new TerrainType("Ore Wall0", new GameTile(32,32,"Graphics.png",32,30,0,0),false,false));
+        terTypes.put("Stairs up", new TerrainType("Stairs up", new GameTile(0,0,"Graphics.png",32,30,0,0),true,true));
+        terTypes.put("Stairs down", new TerrainType("Stairs down", new GameTile(0,32,"Graphics.png",32,30,0,0),true,true));
         objects = new LinkedList<GameObject>();
+        toBeDeleted = new LinkedList<GameObject>();
     }
     
     
@@ -33,6 +41,7 @@ public class GameWorld {
 //        return i*HDIM*HDIM*4+j*HDIM*2+k;
         return i*HDIM*2+j;
     }
+    
     public Terrain getTerrain(int i,int j,int k){
         if(terrain.get(k) == null){
             terrain.put(k, getNewLevel(k));
@@ -49,9 +58,15 @@ public class GameWorld {
         //return null;
     }
     
-    public void addObject(GameObject ob){
+    public void addObject(GameObject ob){ // add object to the world
         objects.add(ob);
     }
+    
+    public void removeObject(GameObject ob) {
+    	ob.delete(); // set deleted flag on object
+    	toBeDeleted.add(ob);
+    }
+    
     public void tickAll(){ // Update objects and stuff
         Iterator<GameObject> i = objects.iterator();
         GameObject o;
@@ -59,17 +74,31 @@ public class GameWorld {
             o = (GameObject)i.next();
             o.tick();
         }
+        i = toBeDeleted.iterator();
+        while(i.hasNext()){
+            o = (GameObject)i.next();
+          	objects.remove(o);
+        }
+        
     }
     
     private Terrain generateTerrain(int i, int j, int k){
+    	if(k == 0) {
+        	String tmp = "Rock Floor"+rnd.nextInt(2);
+        	return new Terrain(i,j,k, terTypes.get(tmp));
+    	}
+    	
         if(i==10 && j == 10){
-        	return new Terrain(i,j,k, terTypes.get("Rock Floor"));
+        	String tmp = "Rock Floor"+rnd.nextInt(2);
+        	return new Terrain(i,j,k, terTypes.get(tmp));
         }
         if(rnd.nextInt(10)<2){
         //if(j> 30 || i > 20 ){ //|| rnd.nextInt(10)<2){
-            return new Terrain(i,j,k, terTypes.get("Rock Wall"));
+        	String tmp = "Rock Wall"+rnd.nextInt(2);
+            return new Terrain(i,j,k, terTypes.get(tmp));
         }
-      	return new Terrain(i,j,k, terTypes.get("Rock Floor"));
+    	String tmp = "Rock Floor"+rnd.nextInt(2);
+      	return new Terrain(i,j,k, terTypes.get(tmp));
     }
     
     public LinkedList<GamePhysical> getDrawable(int i, int j, int k){
@@ -88,6 +117,12 @@ public class GameWorld {
             }
         }
         return t;
+    }
+    public boolean isOutOfBounds(GamePhysical g) {
+    	if(g.x < -HDIM || g.x > HDIM || g.y < -HDIM || g.y > HDIM) {
+    		return true;
+    	}
+    	return false;
     }
 
 }

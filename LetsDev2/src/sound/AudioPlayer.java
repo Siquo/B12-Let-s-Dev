@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javazoom.spi.mpeg.sampled.file.IcyListener;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
@@ -27,17 +29,25 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class AudioPlayer {
 //	private MpegAudioFileReaderWorkaround aReader;
-	private Clip currentClip;
+	private MP3 currentClip;
 	private AudioInputStream currentSong;
 	private URL url;
     private Player player; 
     
+    private Map<MusicType,MP3> songs;
+    private Map<SoundEffect,MP3> effects;
     
 	public AudioPlayer(URL u){
 		super();
 		url = u;
-		//aReader = new MpegAudioFileReaderWorkaround();
-		
+		songs = new HashMap<MusicType,MP3>();
+		effects = new HashMap<SoundEffect,MP3>();
+		songs.put(MusicType.MS_NORMAL, loadSong("SupahSkeery.mp3"));
+		songs.put(MusicType.MS_COMBAT, loadSong("BulletHell.mp3"));
+		try { 
+			player = new Player((InputStream)songs.get(MusicType.MS_NORMAL));
+        }
+        catch (Exception e) { System.out.println(e); }		
 	}
 	
 	public enum MusicType {
@@ -50,17 +60,19 @@ public class AudioPlayer {
 	}
 	
 	public void playMusic(MusicType tp){
-		switch(tp){
-			case MS_NORMAL:{
-				loadSong("Supah Skeery v1.0.mp3");
-			}
-			case MS_COMBAT:{
-				loadSong("Supah Skeery v1.0.mp3");
-			}
-		}
-		if(currentClip != null){
-			//currentClip.start();
-			currentClip.loop(Clip.LOOP_CONTINUOUSLY);
+		MP3 toPlay = songs.get(tp);
+		if(toPlay != currentClip) {
+			player.close();
+        	try {player = new Player((InputStream)toPlay);}
+        	catch (Exception e) { System.out.println(e); }
+		    new Thread() {
+			    public void run() {
+			        try { 
+			        	//player.play(); 
+			        }
+			        catch (Exception e) { System.out.println(e); }
+			    }
+			}.start();
 		}
 	}
 	
@@ -69,27 +81,32 @@ public class AudioPlayer {
 	}
 
 	
-	private void loadSong(String songName){
+	private MP3 loadSong(String songName){
+		MP3 tmp;
 	    try {
 	    	URL nurl = new URL(url, songName);
-	        InputStream fis     = nurl.openStream();
-	        BufferedInputStream bis = new BufferedInputStream(fis);
-	        player = new Player(bis);
+	        FileInputStream fis     = new FileInputStream(songName);
+	        //BufferedInputStream bis = new BufferedInputStream MP3(fis);
+	        MP3 mp3 = new MP3(fis);
+	        //tmp = new Clip(fis);
+	        //player = new Player(bis);
+	        return mp3;
 	    }
 	    catch (Exception e) {
 	        System.out.println("Problem playing file " + songName);
 	        System.out.println(e);
 	    }
+	    return null;
 
 
 
 	// run in new thread to play in background
-	    new Thread() {
+	    /*new Thread() {
 		    public void run() {
 		        try { player.play(); }
 		        catch (Exception e) { System.out.println(e); }
 		    }
-		}.start();
+		}.start();*/
 	}
 /*	
 	private void loadSong(String songName){
@@ -131,4 +148,11 @@ public class AudioPlayer {
 		// TODO Auto-generated method stub
 		
 	}*/
+	private class MP3 extends BufferedInputStream {
+		MP3(FileInputStream i){
+			super(i);
+		}
+	}
 }
+
+

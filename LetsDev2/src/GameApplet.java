@@ -86,7 +86,7 @@ public class GameApplet extends Applet {
         this.addMouseMotionListener(listener);
         controller = new GameController(this);
         controller.setGameWorld(new GameWorld((int)(System.nanoTime()/ 1000000L))); // random seed
-        controller.setRenderEngine(new RenderEngine(getCodeBase(), this));
+        controller.setRenderEngine(new RenderEngine(getCodeBase(), this, controller));
         controller.setSettings(new UserSettings());
         controller.setSoundManager(new AudioPlayer(this.getCodeBase()));
         

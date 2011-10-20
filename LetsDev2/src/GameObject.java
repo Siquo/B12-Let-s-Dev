@@ -25,6 +25,10 @@ public class GameObject extends GamePhysical {
     }
     
     public void hasMoved(){ // call this after you've moved.
+    	if(getWorld().isOutOfBounds(this)) {
+    		getWorld().removeObject(this);
+    		return;
+    	}
     	Terrain t = getWorld().getTerrain((int)x,(int)y,(int)z);
     	if(t != terrain){
     		if(terrain != null) terrain.unRegisterObject(this);
